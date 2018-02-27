@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html ng-app="app">
+
+  <head>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://code.angularjs.org/1.1.3/angular.js"></script>
+    <script src="app.js"></script>
+  </head>
+
+  <body>
+    <div id="d">
+      <h1><i>h/m</i> Graph Analyzer</h1>
+      <p>Upload your <i>h/m</i> file and click to draw a shape to test</p>
+      <input type="file" id="files" name="files[]" multiple />
+      <br>
+      <br>
+      <canvas width="500" height="300" id="canvas" drawing></canvas>
+      <br>
+      <br>
+      <input id="testMe" type="button" value="Test Area"/>
+      <input id="resetArea" type="button" value="Reset"/>
+      <br>
+      <p>*Note: the "Test Area" button will complete your shape back to the first point.</p>
+      <div class="row">
+        <div class="column">
+          <h2>Strains in area:</h2>
+          <div id="listInArea"></div>
+        </div>
+        <div class="column">
+          <h2>Strains not in area:</h2>
+          <div id="listNotInArea"></div>
+        </div>
+      </div>
+      <br>
+    </div>
+  </body>
+
+</html>
