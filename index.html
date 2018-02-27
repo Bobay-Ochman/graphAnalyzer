@@ -10,9 +10,15 @@
   <body>
     <div id="d">
       <h1><i>h/m</i> Graph Analyzer</h1>
-      <p>Upload your <i>h/m</i> file, then click to draw a shape to test as a subset</p>
+      Upload your <i>h/m</i> file, then click to draw a shape to test as a subset
+      <br>*Note: the "Test Area" button will complete your shape back to the first point.
+      <br>Designed for the rm1.txt output files from the <a target="_blank" href="http://www.conspecifix.com">conspecifix</a> desktop process.
+      <br>
+      <br>
+
       <input type="file" id="files" name="files[]" multiple />
-     <!--  Canvas Size
+      <input id="testMe" type="button" value="Test Area"/>
+      <input id="resetArea" type="button" value="Reset"/>      <!--  Canvas Size
       <br>
       <input id="makeMeSmall" type="button" value="Small"/>
       <input id="makeMeMed" type="button" value="Medium"/>
@@ -21,11 +27,8 @@
       <br>
       <canvas width="500" height="300" id="canvas" drawing></canvas>
       <br>
-      <br>
-      <input id="testMe" type="button" value="Test Area"/>
-      <input id="resetArea" type="button" value="Reset"/>
-      <br>
-      <p>*Note: the "Test Area" button will complete your shape back to the first point.</p>
+      <p>
+      </p>
       <div class="row">
         <div class="column">
           <h2>Strains in area:</h2>
@@ -39,9 +42,8 @@
       <br>
       <br>
       <br>
-      <br>
-      <br>
       
+
     </div>
   </body>
 

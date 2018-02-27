@@ -83,8 +83,9 @@ app.directive("drawing", function(){
       }
 
       function loadRMFile(rmText){
-        var entries = rmText.split('\n')
         dataPoints = []
+        allStrains = new Set([]);
+        var entries = rmText.split('\n')
         for (i = 0; i < entries.length; i++) { 
           dataPoint = entries[i].split('\t')
           listOfStrains = dataPoint[0].split('&&&')
