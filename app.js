@@ -42,10 +42,15 @@ app.directive("drawing", function(){
       }
 
       document.getElementById('testMe').onclick = testArea;
+      // document.getElementById('makeMeSmall').onclick = makeSmall;
+      // document.getElementById('makeMeMed').onclick = makeMid;
+      // document.getElementById('makeMeBig').onclick = makeBig;
       document.getElementById('resetArea').onclick = resetCanvas;
       document.getElementById('files').addEventListener('change', handleFileSelect, false);
+      var canvasElement = document.getElementById("canvas");
 
-
+      canvasElement.style.width = "500px";
+      canvasElement.style.height = "300px";
 
 
       element.bind('mousedown', function(event){
@@ -179,8 +184,11 @@ app.directive("drawing", function(){
           }
         }
 
-        listInAreaHtml = "<table><tr><th>Strain Label</th><th>% of Nodes</th></tr>"
-        for(let strain of strainsInArea){
+        listInAreaHtml = "<table><tr><th>Strain Label</th><th>% of Points</th></tr>"
+        var sortedStrains = Array.from(strainsInArea)
+        sortedStrains.sort(function(a, b){return strainCount[b]-strainCount[a]});
+
+        for(let strain of sortedStrains){
           listInAreaHtml += "<tr><td>"+strain+"</td><td>"+Math.round(strainCount[strain] / totalNumbParticles * 1000)/1000+"%</td></tr>"
         }
         listInAreaHtml+="</table>"
@@ -194,11 +202,33 @@ app.directive("drawing", function(){
 
       // canvas reset
       function resetCanvas(){
+        canvasElement.style.width = canWidth+"px";
+        canvasElement.style.height = canHeight + "px";
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         drawPoints()
         document.getElementById("listInArea").innerHTML = ""
         document.getElementById("listNotInArea").innerHTML = ""
         polyPoints = []
+      }
+
+      function makeSmall() { 
+        canWidth = 500;
+        canHeight = 300;
+        resetCanvas();
+      }
+
+
+      function makeMid() { 
+        canWidth = 700;
+        canHeight = 500;
+        resetCanvas();
+      }
+
+
+      function makeBig() { 
+        canWidth = 1000;
+        canHeight = 600;
+        resetCanvas();
       }
       
       function draw(lX, lY, cX, cY){
