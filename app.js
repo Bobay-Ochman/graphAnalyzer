@@ -112,10 +112,16 @@ app.directive("drawing", function(){
           ctx.fillStyle = "#FF0000";
           ctx.fillRect(dp.x,dp.y,2,2);
         }
+        //drawing boarder
         ctx.fillStyle = "#000000";
         ctx.fillRect(boarder,canHeight-boarder,canWidth-2*boarder,1);
         ctx.fillRect(boarder, boarder,1,canHeight-2*boarder);
-
+        for(i = 0; i < maxSize; i+=10){
+          ctx.fillText(""+i,boarder + xScale*i,canHeight-boarder+15);
+        }
+        for(i = 0; i < maxRM; i+=.2){
+          ctx.fillText(""+Math.round( i * 10) / 10,3,canHeight-boarder-(yScale*i));
+        }
       }
 
       function isPointInPoly(poly, pt){
@@ -147,14 +153,23 @@ app.directive("drawing", function(){
 
       function updateList(){
         console.log(allStrains)
+        var strainCount = {}
+        var totalNumbParticles = 0;
         var strainsInArea = new Set([])
         var strainsNotInArea = new Set([])
 
         for(i = 0; i < dataPoints.length; i++){
           var dp = dataPoints[i];
           if(dp.inArea){
+            totalNumbParticles +=1
             for(j = 0; j < dp.strains.length; j++){
               strainsInArea.add(dp.strains[j])
+              if(dp.strains[j] in strainCount){
+                strainCount[dp.strains[j]] += 1
+              }
+              else{
+                strainCount[dp.strains[j]] = 1
+              }
             }            
           }
         }
@@ -164,10 +179,11 @@ app.directive("drawing", function(){
           }
         }
 
-        listInAreaHtml = ""
+        listInAreaHtml = "<table><tr><th>Strain Label</th><th>% of Nodes</th></tr>"
         for(let strain of strainsInArea){
-          listInAreaHtml += "<br>"+strain
+          listInAreaHtml += "<tr><td>"+strain+"</td><td>"+Math.round(strainCount[strain] / totalNumbParticles * 1000)/1000+"%</td></tr>"
         }
+        listInAreaHtml+="</table>"
         listNotInAreaHtml = ""
         for(let strain of strainsNotInArea){
           listNotInAreaHtml += "<br>"+strain
