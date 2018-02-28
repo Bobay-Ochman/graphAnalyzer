@@ -185,12 +185,12 @@ app.directive("drawing", function(){
           }
         }
 
-        listInAreaHtml = "<table><tr><th>Strain Label</th><th>% of Points</th></tr>"
+        listInAreaHtml = "<table cellspacing=\"0\" cellpadding=\"0\"><tr><th>Strain Label</th><th>% of Points</th></tr>"
         var sortedStrains = Array.from(strainsInArea)
         sortedStrains.sort(function(a, b){return strainCount[b]-strainCount[a]});
 
         for(let strain of sortedStrains){
-          listInAreaHtml += "<tr><td>"+strain+"</td><td>"+Math.round(strainCount[strain] / totalNumbParticles * 1000)/1000+"%</td></tr>"
+          listInAreaHtml += "<tr><td>"+strain+"</td><td>"+Math.round(strainCount[strain] / totalNumbParticles * 1000)/10+"%</td></tr>"
         }
         listInAreaHtml+="</table>"
         listNotInAreaHtml = ""
