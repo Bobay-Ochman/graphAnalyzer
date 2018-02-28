@@ -17,7 +17,6 @@ app.directive("drawing", function(){
 
       var justTested = false;
 
-      drawPoints()
 
       function handleFileSelect(evt) {
         var files = evt.target.files; // FileList object
@@ -42,20 +41,22 @@ app.directive("drawing", function(){
       }
 
       document.getElementById('testMe').onclick = testArea;
-      // document.getElementById('makeMeSmall').onclick = makeSmall;
-      // document.getElementById('makeMeMed').onclick = makeMid;
-      // document.getElementById('makeMeBig').onclick = makeBig;
-      document.getElementById('resetArea').onclick = resetCanvas;
+      document.getElementById('makeMeSmall').onclick = makeSmall;
+      document.getElementById('makeMeMed').onclick = makeMid;
+      document.getElementById('makeMeBig').onclick = makeBig;
+      document.getElementById('resetArea').onclick = resetPoly;
       document.getElementById('files').addEventListener('change', handleFileSelect, false);
       var canvasElement = document.getElementById("canvas");
 
-      canvasElement.style.width = "500px";
-      canvasElement.style.height = "300px";
+      canvasElement.width = 500;
+      canvasElement.height = 300;
+
+      drawCanvas()
 
 
       element.bind('mousedown', function(event){
         if(justTested){
-          resetCanvas()
+          drawCanvas()
           justTested = false
         }
         if(event.offsetX!==undefined){
@@ -74,16 +75,21 @@ app.directive("drawing", function(){
       });
       
       function drawPolyThing(){
-        ctx.beginPath();
-        ctx.moveTo(polyPoints[0].x,polyPoints[0].y);
-        for(i = 1; i < polyPoints.length; i++){
-          ctx.lineTo(polyPoints[i].x,polyPoints[i].y);
-          ctx.stroke();
+        if(polyPoints.length > 1){
+          ctx.beginPath();
+          ctx.moveTo(polyPoints[0].x,polyPoints[0].y);
+          for(i = 1; i < polyPoints.length; i++){
+            ctx.lineTo(polyPoints[i].x,polyPoints[i].y);
+            ctx.stroke();
+          }          
         }
       }
 
       function loadRMFile(rmText){
         dataPoints = []
+        polyPoints = []
+        maxSize = 0
+        maxRM = 0
         allStrains = new Set([]);
         var entries = rmText.split('\n')
         for (i = 0; i < entries.length; i++) { 
@@ -105,7 +111,8 @@ app.directive("drawing", function(){
             maxRM = data.rm
           }
         }
-        drawPoints()
+        allStrains.delete('')
+        drawCanvas()
       }
 
       function drawPoints(){
@@ -120,8 +127,9 @@ app.directive("drawing", function(){
         }
         //drawing boarder
         ctx.fillStyle = "#000000";
-        ctx.fillRect(boarder,canHeight-boarder,canWidth-2*boarder,1);
-        ctx.fillRect(boarder, boarder,1,canHeight-2*boarder);
+        ctx.fillRect(boarder,canHeight-boarder,canWidth-(2*boarder),1);
+        ctx.fillRect(boarder, boarder,1,canHeight-(2*boarder));
+        //putting in numbers
         for(i = 0; i < maxSize; i+=10){
           ctx.fillText(""+i,boarder + xScale*i,canHeight-boarder+15);
         }
@@ -158,7 +166,6 @@ app.directive("drawing", function(){
       }
 
       function updateList(){
-        console.log(allStrains)
         var strainCount = {}
         var totalNumbParticles = 0;
         var strainsInArea = new Set([])
@@ -185,15 +192,15 @@ app.directive("drawing", function(){
           }
         }
 
-        listInAreaHtml = "<table cellspacing=\"0\" cellpadding=\"0\"><tr><th>Strain Label</th><th>% of Points</th></tr>"
         var sortedStrains = Array.from(strainsInArea)
         sortedStrains.sort(function(a, b){return strainCount[b]-strainCount[a]});
+        listInAreaHtml = "Total: "+sortedStrains.length+"<br><table cellspacing=\"0\" cellpadding=\"0\"><tr><th>Strain Label</th><th>% of Points</th></tr>"
 
         for(let strain of sortedStrains){
           listInAreaHtml += "<tr><td>"+strain+"</td><td>"+Math.round(strainCount[strain] / totalNumbParticles * 1000)/10+"%</td></tr>"
         }
         listInAreaHtml+="</table>"
-        listNotInAreaHtml = ""
+        listNotInAreaHtml = "Total: "+strainsNotInArea.size+"<br>"
         for(let strain of strainsNotInArea){
           listNotInAreaHtml += "<br>"+strain
         }
@@ -202,34 +209,40 @@ app.directive("drawing", function(){
       }
 
       // canvas reset
-      function resetCanvas(){
-        canvasElement.style.width = canWidth+"px";
-        canvasElement.style.height = canHeight + "px";
+      function drawCanvas(wide,height){
+        if(wide){
+          canWidth = wide;
+          canHeight = height;         
+        }
+        canvasElement.width = canWidth;
+        canvasElement.height = canHeight;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         drawPoints()
         document.getElementById("listInArea").innerHTML = ""
         document.getElementById("listNotInArea").innerHTML = ""
+        drawPolyThing()
+      }
+
+      function resetPoly(){
         polyPoints = []
+        drawCanvas()
       }
 
       function makeSmall() { 
-        canWidth = 500;
-        canHeight = 300;
-        resetCanvas();
+        polyPoints = []
+        drawCanvas(500,300);
       }
 
 
       function makeMid() { 
-        canWidth = 700;
-        canHeight = 500;
-        resetCanvas();
+        polyPoints = []
+        drawCanvas(700,500);
       }
 
 
-      function makeBig() { 
-        canWidth = 1000;
-        canHeight = 600;
-        resetCanvas();
+      function makeBig() {
+        polyPoints = []
+        drawCanvas(1000,600);
       }
       
       function draw(lX, lY, cX, cY){
