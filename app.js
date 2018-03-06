@@ -56,6 +56,7 @@ app.directive("drawing", function(){
 
       element.bind('mousedown', function(event){
         if(justTested){
+          polyPoints = [];
           drawCanvas()
           justTested = false
         }
@@ -133,7 +134,7 @@ app.directive("drawing", function(){
         for(i = 0; i < maxSize; i+=10){
           ctx.fillText(""+i,boarder + xScale*i,canHeight-boarder+15);
         }
-        for(i = 0; i < maxRM; i+=.2){
+        for(i = 0; i < maxRM; i+=.1){
           ctx.fillText(""+Math.round( i * 10) / 10,3,canHeight-boarder-(yScale*i));
         }
       }
@@ -195,9 +196,15 @@ app.directive("drawing", function(){
         var sortedStrains = Array.from(strainsInArea)
         sortedStrains.sort(function(a, b){return strainCount[b]-strainCount[a]});
         listInAreaHtml = "Total: "+sortedStrains.length+"<br><table cellspacing=\"0\" cellpadding=\"0\"><tr><th>Strain Label</th><th>% of Points</th></tr>"
-
+        var max = -1
         for(let strain of sortedStrains){
-          listInAreaHtml += "<tr><td>"+strain+"</td><td>"+Math.round(strainCount[strain] / totalNumbParticles * 1000)/10+"%</td></tr>"
+          var percent = Math.round(strainCount[strain] / totalNumbParticles * 1000)/10
+          if(percent > max){
+            max = percent
+            console.log("change!")
+          }
+          var intensity = 255-Math.round((max-percent) *2.55)
+          listInAreaHtml += "<tr style=\" background: rgb(255,"+intensity+","+intensity+"); \" ><td>"+strain+"</td><td>"+percent+"%</td></tr>"
         }
         listInAreaHtml+="</table>"
         listNotInAreaHtml = "Total: "+strainsNotInArea.size+"<br>"

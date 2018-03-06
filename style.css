@@ -18,9 +18,6 @@ body{
 }
 
 
-tr:nth-child(even) {background: #CCC}
-tr:nth-child(odd) {background: #FFF}
-
 h1{
   color: #444;
   font-family: "Eau Naturelle", "Helvetica", "Arial", "Lucida Grande", "Gill Sans", "Verdana", sans-serif;
